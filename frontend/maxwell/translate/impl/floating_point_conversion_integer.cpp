@@ -96,7 +96,7 @@ IR::F64 UnpackCbuf(TranslatorVisitor& v, u64 insn) {
         BitField<34, 5, u64> binding;
     } const cbuf{insn};
     if (cbuf.binding >= 18) {
-        throw NotImplementedException("Out of bounds constant buffer binding {}", cbuf.binding);
+        throw NotImplementedException("Out of bounds constant buffer binding {}", cbuf.binding.Value());
     }
     if (cbuf.offset >= 0x4'000 || cbuf.offset < 0) {
         throw NotImplementedException("Out of bounds constant buffer offset {}", cbuf.offset * 4);
