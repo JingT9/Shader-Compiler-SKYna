@@ -366,36 +366,36 @@ void EmitImageGather(EmitContext& ctx, IR::Inst& inst, const IR::Value& index,
     if (!sparse_inst || !supports_sparse) {
         if (offset.IsEmpty()) {
             ctx.Add("{}=textureGather({},{},int({}));", texel, texture, coords,
-                    info.gather_component);
+                    info.gather_component.Value());
             return;
         }
         if (offset2.IsEmpty()) {
             ctx.Add("{}=textureGatherOffset({},{},{},int({}));", texel, texture, coords,
-                    GetOffsetVec(ctx, offset), info.gather_component);
+                    GetOffsetVec(ctx, offset), info.gather_component.Value());
             return;
         }
         // PTP
         const auto offsets{PtpOffsets(offset, offset2)};
         ctx.Add("{}=textureGatherOffsets({},{},{},int({}));", texel, texture, coords, offsets,
-                info.gather_component);
+                info.gather_component.Value());
         return;
     }
     if (offset.IsEmpty()) {
         ctx.AddU1("{}=sparseTexelsResidentARB(sparseTextureGatherARB({},{},{},int({})));",
-                  *sparse_inst, texture, coords, texel, info.gather_component);
+                  *sparse_inst, texture, coords, texel, info.gather_component.Value());
         return;
     }
     if (offset2.IsEmpty()) {
         ctx.AddU1("{}=sparseTexelsResidentARB(sparseTextureGatherOffsetARB({},{},{},{},int({})));",
                   *sparse_inst, texture, CastToIntVec(coords, info), GetOffsetVec(ctx, offset),
-                  texel, info.gather_component);
+                  texel, info.gather_component.Value());
         return;
     }
     // PTP
     const auto offsets{PtpOffsets(offset, offset2)};
     ctx.AddU1("{}=sparseTexelsResidentARB(sparseTextureGatherOffsetARB({},{},{},{},int({})));",
               *sparse_inst, texture, CastToIntVec(coords, info), offsets, texel,
-              info.gather_component);
+              info.gather_component.Value());
 }
 
 void EmitImageGatherDref(EmitContext& ctx, IR::Inst& inst, const IR::Value& index,
